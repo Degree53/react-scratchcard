@@ -19,7 +19,8 @@
     "url": "https://github.com/aleksik/react-scratchcard.git"
   },
   "dependencies": {
-    "react": "^15.0.0"
+    "react": "^15.0.0",
+    "react-dom": "^15.4.2"
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",
