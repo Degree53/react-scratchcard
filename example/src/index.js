@@ -5,16 +5,16 @@ import ScratchCard from '../../src';
 import cardImage from './card.jpg';
 
 const settings = {
-  width: 640,
+  width: 480,
   height: 480,
   image: cardImage,
-  finishPercent: 50,
+  finishPercent: 75,
   onComplete: () => console.log('The card is now clear!')
 };
 
 const Example = () =>
   <ScratchCard {...settings}>
-    Congratulations! You WON!
+    <p>Congratulations! You WON!</p>
   </ScratchCard>;
 
 render(<Example />, document.getElementById('root'));

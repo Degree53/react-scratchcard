@@ -44,15 +44,13 @@ class ScratchCard extends Component {
 		let offsetY = 0;
 		let mx, my;
 
-		if (canvas.offsetParent !== undefined) {
-			do {
-				offsetX += canvas.offsetLeft;
-				offsetY += canvas.offsetTop;
-			} while ((canvas = canvas.offsetParent));
-		}
+		const bounds = e.target.getBoundingClientRect();
 
-		mx = (e.pageX || e.touches[0].clientX) - offsetX;
-		my = (e.pageY || e.touches[0].clientY) - offsetY;
+		var ratioX = bounds.width / this.props.width;
+		var ratioY = bounds.height / this.props.height;
+
+		mx = (((e.pageX - window.scrollX) || e.touches[0].clientX) - bounds.left) / ratioX;
+		my = (((e.pageY - window.screenY) || e.touches[0].clientY) - bounds.top) / ratioY;
 
 		return { x: mx, y: my }
 	}
@@ -118,46 +116,54 @@ class ScratchCard extends Component {
 	render() {
 
 		const containerStyle = {
-			width: this.props.width + 'px',
-			height: this.props.height + 'px',
+			height: this.props.height,
+			width: this.props.width,
 			position: 'relative',
 			WebkitUserSelect: 'none',
 			MozUserSelect: 'none',
 			msUserSelect: 'none',
-			userSelect: 'none'
-		}
+			userSelect: 'none',
+			maxWidth: '100%',
+			maxHeight: '100%'
+		};
 
-		const canvasStyle = {
+		const childStyle = {
+			backfaceVisibility: 'hidden',
 			position: 'absolute',
+			width: '100%',
+			height: '100%',
 			top: 0,
-			zIndex: 1,
-			touchAction: 'none'
-		}
+			left: 0
+		};
 
-		const resultStyle = {
+		const canvasStyle = Object.assign({}, childStyle, {
+			position: 'absolute',
+			touchAction: 'none'
+		});
+
+		const resultStyle = Object.assign({}, childStyle, {
 			visibility: this.state.loaded ? 'visible' : 'hidden'
-		}
+		});
 
 		const canvasProps = {
 			ref: (ref) => this.canvas = ref,
-			className: 'ScratchCard__Canvas',
-			style: canvasStyle,
-			width: this.props.width,
 			height: this.props.height,
+			width: this.props.width,
 			onMouseDown: this.handleMouseDown.bind(this),
 			onTouchStart: this.handleMouseDown.bind(this),
 			onMouseMove: this.handleMouseMove.bind(this),
 			onTouchMove: this.handleMouseMove.bind(this),
 			onMouseUp: this.handleMouseUp.bind(this),
-			onTouchEnd: this.handleMouseUp.bind(this)
-		}
+			onTouchEnd: this.handleMouseUp.bind(this),
+			onMouseOut: this.handleMouseUp.bind(this)
+		};
 
 		return (
 			<div className="ScratchCard__Container" style={ containerStyle }>
-				<canvas {...canvasProps}></canvas>
 				<div className="ScratchCard__Result" style={ resultStyle }>
 					{ this.props.children }
 				</div>
+				<canvas className="ScratchCard__Canvas" style={ canvasStyle } {...canvasProps}></canvas>
 			</div>
 		);
 	}
